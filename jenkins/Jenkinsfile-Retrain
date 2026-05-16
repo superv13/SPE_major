@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = 'apoorvakharya'
+        DOCKERHUB_CREDENTIALS = 'superv13'
         DOCKER_IMAGE = "${DOCKERHUB_CREDENTIALS}/fake-news-app:${env.BUILD_ID}"
         DOCKER_LATEST = "${DOCKERHUB_CREDENTIALS}/fake-news-app:latest"
     }
@@ -33,8 +33,8 @@ pipeline {
                 echo 'Retraining pipeline triggered by misclassification threshold! Training on Original Data + Database Data...'
                 sh '''
                     mkdir -p db data
-                    cp /home/apoorva-kharya/fake-news-detection/db/fake_news.db db/ || echo "Warning: fake_news.db not found"
-                    cp /home/apoorva-kharya/fake-news-detection/data/original_dataset.csv data/ || echo "Warning: original_dataset.csv not found"
+                    cp /Users/vumma/Downloads/MLOps-main-2/db/fake_news.db db/ || echo "Warning: fake_news.db not found"
+                    cp /Users/vumma/Downloads/MLOps-main-2/data/original_dataset.csv data/ || echo "Warning: original_dataset.csv not found"
                     . venv-jk/bin/activate
                     python model/train.py
                     echo "Model full retraining script executed!"
