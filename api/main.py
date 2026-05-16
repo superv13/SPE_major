@@ -114,7 +114,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 model.eval()
 
-
 # ---------- Request Models ----------
 
 class InputText(BaseModel):
@@ -124,13 +123,11 @@ class FeedbackInput(BaseModel):
     id: int
     correct_label: str
 
-
 # ---------- Home ----------
 
 @app.get("/")
 def home():
     return FileResponse(os.path.join(BASE_DIR, "../frontend/index.html"))
-
 
 # ---------- Predict ----------
 
@@ -256,9 +253,8 @@ def feedback(data: FeedbackInput):
                     if password:
                         logger.info("Using Jenkins credentials from Environment Variables.")
                     else:
-                        # Temporary fallback to the known dev password to prevent pipeline breakage
-                        password = "93311eeb42b3443db6deae51dff0e571"
-                        logger.warning("No Jenkins password found in Vault or Env. Falling back to dev default.")
+                        logger.error("No Jenkins credentials found in Vault or Environment Variables. Trigger aborted.")
+                        return
 
                     auth = (username, password)
                     session = requests.Session()

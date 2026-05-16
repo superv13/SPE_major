@@ -42,7 +42,7 @@ spec:
               name: fake-news-secrets
               key: jenkins-pass
         - name: JENKINS_URL
-          value: "http://192.168.49.1:8080"
+          value: "https://marlys-unrazored-carrie.ngrok-free.dev"
         - name: VAULT_ADDR
           value: "http://192.168.49.1:8200"
         resources:
