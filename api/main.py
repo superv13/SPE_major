@@ -83,6 +83,9 @@ MODEL_PATH = os.path.join(BASE_DIR, "../model/bert_fake_news_model")
 DB_PATH = os.path.join(BASE_DIR, "../db/fake_news.db")
 
 def init_db():
+    db_dir = os.path.dirname(DB_PATH)
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
     logger.info(f"Initializing database at {DB_PATH}")
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
