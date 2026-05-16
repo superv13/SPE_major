@@ -22,7 +22,7 @@ spec:
       containers:
       - name: api
         image: svrma13/fake-news-app:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
