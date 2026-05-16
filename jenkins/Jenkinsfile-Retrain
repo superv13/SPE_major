@@ -69,7 +69,7 @@ pipeline {
                 sh '''
                     . venv-jk/bin/activate
                     pip install kubernetes
-                    /usr/local/bin/ansible-playbook ansible/deploy.yml -e "ansible_python_interpreter=$(pwd)/venv-jk/bin/python"
+                    /opt/homebrew/bin/ansible-playbook ansible/deploy.yml -e "ansible_python_interpreter=$(pwd)/venv-jk/bin/python"
                     echo "Ansible deploy triggered!"
                 '''
             }
