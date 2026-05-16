@@ -1,0 +1,11 @@
+{
+  "name": "fake-news-detector-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the MLOps Fake News Detector",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx live-server . --port=3000 --proxy=/predict:http://localhost:8000/predict --proxy=/feedback:http://localhost:8000/feedback",
+    "dev": "npm start"
+  },
+  "dependencies": {}
+}

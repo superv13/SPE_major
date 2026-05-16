@@ -1,0 +1,11 @@
+venv/
+db/fake_news.db
+__pycache__/
+logs/
+.pytest_cache/
+model/bert_fake_news_model/
+k8s/secrets.yaml
+.env
+venv-jk/
+results/
+logstash.db

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fake-news-api
+  labels:
+    app: fake-news
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: fake-news
+  template:
+    metadata:
+      labels:
+        app: fake-news
+    spec:
+      containers:
+      - name: api
+        image: apoorvakharya/fake-news-app:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: VAULT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: fake-news-secrets
+              key: vault-token
+        - name: JENKINS_USER
+          valueFrom:
+            secretKeyRef:
+              name: fake-news-secrets
+              key: jenkins-user
+        - name: JENKINS_PASS
+          valueFrom:
+            secretKeyRef:
+              name: fake-news-secrets
+              key: jenkins-pass
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
