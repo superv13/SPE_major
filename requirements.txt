@@ -8,5 +8,5 @@ hvac
 pandas
 datasets
 pytest
-accelerate>=1.1.0
+accelerate>=0.26.0
 python-dotenv
