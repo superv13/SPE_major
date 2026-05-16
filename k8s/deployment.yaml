@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: apoorvakharya/fake-news-app:latest
+        image: svrma13/fake-news-app:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
