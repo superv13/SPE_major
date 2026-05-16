@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = 'apoorvakharya'
+        DOCKERHUB_CREDENTIALS = 'superv13'
         DOCKER_IMAGE = "${DOCKERHUB_CREDENTIALS}/fake-news-app:${env.BUILD_ID}"
         DOCKER_LATEST = "${DOCKERHUB_CREDENTIALS}/fake-news-app:latest"
     }
