@@ -257,32 +257,32 @@ def feedback(data: FeedbackInput):
                         password = "93311eeb42b3443db6deae51dff0e571"
                         logger.warning("No Jenkins password found in Vault or Env. Falling back to dev default.")
 
-                auth = (username, password)
-                session = requests.Session()
-                session.auth = auth
-                
-                # Jenkins Config
-                JENKINS_BASE_URL = os.environ.get('JENKINS_URL', 'http://localhost:8080')
-                JOB_NAME = os.environ.get('JENKINS_JOB_NAME', 'fake_news_Retraining')
+                    auth = (username, password)
+                    session = requests.Session()
+                    session.auth = auth
+                    
+                    # Jenkins Config
+                    JENKINS_BASE_URL = os.environ.get('JENKINS_URL', 'http://localhost:8080')
+                    JOB_NAME = os.environ.get('JENKINS_JOB_NAME', 'MlOps-retrain')
 
-                # Fetch Crumb for CSRF protection
-                crumb_url = f"{JENKINS_BASE_URL}/crumbIssuer/api/json"
-                crumb_resp = session.get(crumb_url, timeout=5)
-                
-                headers = {}
-                if crumb_resp.status_code == 200:
-                    crumb_data = crumb_resp.json()
-                    headers = {crumb_data['crumbRequestField']: crumb_data['crumb']}
-                else:
-                    logger.warning(f"Could not fetch Jenkins crumb (Status: {crumb_resp.status_code}).")
-                
-                webhook_url = f"{JENKINS_BASE_URL}/job/{JOB_NAME}/build"
-                resp = session.post(webhook_url, headers=headers, timeout=5)
-                
-                if resp.status_code in [200, 201, 202]:
-                    logger.info(f"✅ Successfully triggered Jenkins job '{JOB_NAME}' (Status: {resp.status_code}).")
-                else:
-                    logger.error(f"❌ Failed to trigger Jenkins. Status: {resp.status_code}, URL: {webhook_url}")
+                    # Fetch Crumb for CSRF protection
+                    crumb_url = f"{JENKINS_BASE_URL}/crumbIssuer/api/json"
+                    crumb_resp = session.get(crumb_url, timeout=5)
+                    
+                    headers = {}
+                    if crumb_resp.status_code == 200:
+                        crumb_data = crumb_resp.json()
+                        headers = {crumb_data['crumbRequestField']: crumb_data['crumb']}
+                    else:
+                        logger.warning(f"Could not fetch Jenkins crumb (Status: {crumb_resp.status_code}).")
+                    
+                    webhook_url = f"{JENKINS_BASE_URL}/job/{JOB_NAME}/build"
+                    resp = session.post(webhook_url, headers=headers, timeout=5)
+                    
+                    if resp.status_code in [200, 201, 202]:
+                        logger.info(f"✅ Successfully triggered Jenkins job '{JOB_NAME}' (Status: {resp.status_code}).")
+                    else:
+                        logger.error(f"❌ Failed to trigger Jenkins. Status: {resp.status_code}, URL: {webhook_url}")
             except Exception as e:
                 logger.error(f"Critical error during Jenkins trigger: {e}")
 
