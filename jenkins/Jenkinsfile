@@ -19,10 +19,11 @@ pipeline {
             steps {
                 echo 'Running automated tests...'
                 sh '''
+                    rm -rf venv-jk
                     python3 -m venv venv-jk
                     . venv-jk/bin/activate
                     pip install --upgrade pip
-                    pip install -r requirements.txt
+                    pip install -r requirements.txt transformers[torch]
                     pytest tests/ || echo "No tests found or test failed, ignoring for now"
                 '''
             }
