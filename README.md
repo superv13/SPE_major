@@ -69,4 +69,4 @@ uvicorn api.main:app --reload
 - `logstash/`: Configuration for log processing.
 
 ---
-**Author:** Shruthi Varma / svrma13
+**Author:** Shruti Verma / svrma13
