@@ -47,7 +47,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 echo 'Building updated Docker image with refreshed AI model...'
-                sh "docker build -t ${DOCKER_IMAGE} -t ${DOCKER_LATEST} ."
+                sh "/usr/local/bin/docker build -t ${DOCKER_IMAGE} -t ${DOCKER_LATEST} ."
             }
         }
         
@@ -56,9 +56,9 @@ pipeline {
                 echo 'Pushing image to container registry...'
                 // Ensure Jenkins has docker credentials configured if actually running
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKERHUB_PASS', usernameVariable: 'DOCKERHUB_USER')]) {
-                    sh "echo \$DOCKERHUB_PASS | docker login -u \$DOCKERHUB_USER --password-stdin"
-                    sh "docker push ${DOCKER_IMAGE}"
-                    sh "docker push ${DOCKER_LATEST}"
+                    sh "echo \$DOCKERHUB_PASS | /usr/local/bin/docker login -u \$DOCKERHUB_USER --password-stdin"
+                    sh "/usr/local/bin/docker push ${DOCKER_IMAGE}"
+                    sh "/usr/local/bin/docker push ${DOCKER_LATEST}"
                 }
             }
         }
