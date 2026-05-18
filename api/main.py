@@ -13,6 +13,7 @@ import logging
 import hvac
 from logstash_async.handler import AsynchronousLogstashHandler
 from dotenv import load_dotenv
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Load environment variables from .env file
 load_dotenv()
@@ -45,6 +46,7 @@ else:
     logger.info("ℹ️ Logstash is disabled. Set ENABLE_LOGSTASH=true in .env to enable.")
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
 
 JENKINS_AUTH = None
 
