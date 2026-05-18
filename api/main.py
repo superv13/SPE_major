@@ -129,6 +129,28 @@ class FeedbackInput(BaseModel):
 def home():
     return FileResponse(os.path.join(BASE_DIR, "../frontend/index.html"))
 
+# ---------- Health Check ----------
+
+@app.get("/health")
+def health():
+    model_loaded = model is not None and tokenizer is not None
+    database_status = "disconnected"
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        cur.fetchone()
+        conn.close()
+        database_status = "connected"
+    except Exception as e:
+        logger.error(f"Database health check failed: {e}")
+        
+    return {
+        "status": "healthy" if (model_loaded and database_status == "connected") else "unhealthy",
+        "model_loaded": model_loaded,
+        "database": database_status
+    }
+
 # ---------- Predict ----------
 
 @app.post("/predict/")
@@ -256,32 +278,32 @@ def feedback(data: FeedbackInput):
                         logger.error("No Jenkins credentials found in Vault or Environment Variables. Trigger aborted.")
                         return
 
-                    auth = (username, password)
-                    session = requests.Session()
-                    session.auth = auth
-                    
-                    # Jenkins Config
-                    JENKINS_BASE_URL = os.environ.get('JENKINS_URL', 'http://localhost:8080')
-                    JOB_NAME = os.environ.get('JENKINS_JOB_NAME', 'MlOps-retrain')
+                auth = (username, password)
+                session = requests.Session()
+                session.auth = auth
+                
+                # Jenkins Config
+                JENKINS_BASE_URL = os.environ.get('JENKINS_URL', 'http://localhost:8080')
+                JOB_NAME = os.environ.get('JENKINS_JOB_NAME', 'MlOps-retrain')
 
-                    # Fetch Crumb for CSRF protection
-                    crumb_url = f"{JENKINS_BASE_URL}/crumbIssuer/api/json"
-                    crumb_resp = session.get(crumb_url, timeout=5)
-                    
-                    headers = {}
-                    if crumb_resp.status_code == 200:
-                        crumb_data = crumb_resp.json()
-                        headers = {crumb_data['crumbRequestField']: crumb_data['crumb']}
-                    else:
-                        logger.warning(f"Could not fetch Jenkins crumb (Status: {crumb_resp.status_code}).")
-                    
-                    webhook_url = f"{JENKINS_BASE_URL}/job/{JOB_NAME}/build"
-                    resp = session.post(webhook_url, headers=headers, timeout=5)
-                    
-                    if resp.status_code in [200, 201, 202]:
-                        logger.info(f"✅ Successfully triggered Jenkins job '{JOB_NAME}' (Status: {resp.status_code}).")
-                    else:
-                        logger.error(f"❌ Failed to trigger Jenkins. Status: {resp.status_code}, URL: {webhook_url}")
+                # Fetch Crumb for CSRF protection
+                crumb_url = f"{JENKINS_BASE_URL}/crumbIssuer/api/json"
+                crumb_resp = session.get(crumb_url, timeout=5)
+                
+                headers = {}
+                if crumb_resp.status_code == 200:
+                    crumb_data = crumb_resp.json()
+                    headers = {crumb_data['crumbRequestField']: crumb_data['crumb']}
+                else:
+                    logger.warning(f"Could not fetch Jenkins crumb (Status: {crumb_resp.status_code}).")
+                
+                webhook_url = f"{JENKINS_BASE_URL}/job/{JOB_NAME}/build"
+                resp = session.post(webhook_url, headers=headers, timeout=5)
+                
+                if resp.status_code in [200, 201, 202]:
+                    logger.info(f"✅ Successfully triggered Jenkins job '{JOB_NAME}' (Status: {resp.status_code}).")
+                else:
+                    logger.error(f"❌ Failed to trigger Jenkins. Status: {resp.status_code}, URL: {webhook_url}")
             except Exception as e:
                 logger.error(f"Critical error during Jenkins trigger: {e}")
 
