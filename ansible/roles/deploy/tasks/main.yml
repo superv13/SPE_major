@@ -6,6 +6,7 @@
     definition: "{{ lookup('file', '../../../../k8s/' + item) | from_yaml }}"
   loop:
     - db-pvc.yaml
+    - secrets.yaml
     - deployment.yaml
     - service.yaml
     - hpa.yaml
